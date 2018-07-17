@@ -1,0 +1,17 @@
+<b>Trip Infomation</b><br><br>
+
+{% if latest_trips %}
+
+<ol margin-left:0px;padding-left:0px;">
+{% for trips in latest_trips  %}
+User = {{trips.username}}<br>
+Car Number = {{trips.carnum}}<br>
+Latitude = {{trips.slat}}<br>
+Longitude = {{trips.slong}}<br>
+D-Latitude = {{trips.dlat}}<br>
+D-Longitude = {{trips.dlong}}<br><br><br>
+{% endfor %}
+{% endif %}
+</ol>
+<a href="{% url 'cautionjson:datainsert' %}"><input type="button" name="insert" value="Insert"> </a>
+

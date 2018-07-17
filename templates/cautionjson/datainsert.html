@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Geolocation</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+      
+      #map {
+        height: 100%;
+      }
+      
+      html, body {
+        height: 80%;
+        margin: 20;
+        padding: 20;
+      }
+    </style>
+  </head>
+  <body>
+    
+    <div id="map"></div>
+    <script>
+      var map, infoWindow;
+      var lat1,lon1;
+      var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      var labelIndex = 0;
+      var markers = [];
+      var c = 0;
+
+
+      function initMap() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            var pos = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+
+            };
+
+          lat1 = position.coords.latitude
+          lon1 = position.coords.longitude
+        document.getElementById("lati").innerHTML = lat1
+        document.getElementById("long").innerHTML = lon1
+        document.getElementById("ji").innerHTML = markers
+        document.getElementById('sla').value =  lat1;
+        document.getElementById('slo').value = lon1;
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: pos,
+          zoom: 12 });
+        var startpostion = new google.maps.Marker({
+          position: pos,
+          map: map,
+         
+        });
+        google.maps.event.addListener(map, 'click', function(event) {
+          addMarker(event.latLng, map);
+          var myLatLng = event.latLng;
+        var lat2 = myLatLng.lat();
+        var lon2 = myLatLng.lng();
+        document.getElementById("lati1").innerHTML = lat2
+          document.getElementById("long1").innerHTML = lon2
+          document.getElementById('sle').value =  lat2;
+          document.getElementById('slu').value = lon2;
+
+        });
+        
+        
+
+        
+        infoWindow = new google.maps.InfoWindow;
+
+
+        // Try HTML5 geolocation.
+        
+
+            infoWindow.setPosition(pos);
+            infoWindow.setContent('Location found.');
+            infoWindow.open(map);
+            map.setCenter(pos);
+          }, function() {
+            handleLocationError(true, infoWindow, map.getCenter());
+          });
+        } else {
+          // Browser doesn't support Geolocation
+          handleLocationError(false, infoWindow, map.getCenter());
+        }
+      
+      }
+      function addMarker(location) {
+
+        if ( c == 0 ){
+        var marker = new google.maps.Marker({
+         position: location,
+          map: map
+        });
+        markers.push(marker);
+        c = 1;
+
+
+      }else {
+         clearMarkers();
+          markers = [];
+        c=0;
+      }
+    }
+      function setMapOnAll(map) {
+        for (var i = 0; i < markers.length; i++) {
+          markers[i].setMap(map);
+        }
+      }
+       function clearMarkers() {
+        setMapOnAll(null);
+      }
+      function deleteMarkers() {
+        clearMarkers();
+        markers = [];
+      }
+       function showMarkers() {
+        setMapOnAll(map);
+      }
+
+      
+
+      google.maps.event.addDomListener(window, 'load', initialize);
+
+      function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+        infoWindow.setPosition(pos);
+        infoWindow.setContent(browserHasGeolocation ?
+                              'Error: The Geolocation service failed.' :
+                              'Error: Your browser doesn\'t support geolocation.');
+        infoWindow.open(map);
+      }
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyApyFKJOnnITw1LQSDNaLpuvO81Ja9V7lk&callback=initMap">
+      
+    </script>
+    <form action="{% url 'cautionjson:finish'  %}" method="POST" onload="initMap()">
+    {% csrf_token %}
+      Car Number: <input type="text" maxlength=30 name=txtcarnum /></br>
+      Latitude is <span id = "lati" ></span><br>
+      Longitude is <span id = "long" > </span><br>
+      Des Latitude <span id = "lati1" ></span><br>
+      Des Longitude <span id = "long1" > </span><br>
+      <span id = "ji" > </span>
+      <input type="hidden" name="lat" id="sla" />
+      <input type="hidden" name="lon" id="slo" />
+      <input type="hidden" name="lat1" id="sle" />
+      <input type="hidden" name="lon1" id="slu" /><br><br>
+      
+      <input type="submit" value = "Go" />
+      <input onclick="deleteMarkers();" type=button value="Delete Markers">
+      <input onclick="clearMarkers();" type=button value="Hide Markers">
+       <input onclick="showMarkers();" type=button value="Show All Markers">
+    </form>
+
+  </body>
+</html>
