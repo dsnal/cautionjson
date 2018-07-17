@@ -12,7 +12,6 @@ urlpatterns = [
 	url(r'^trips/datainsert/$', views.datainsert, name='datainsert'),
 	url(r'^trips/finish/$', views.finish, name='finish'),
 	url(r'^trips/users/$', views.UserList.as_view()),
-	url(r'^trips/users/(?P<pk>[0-9]+)/$', views.UserDetail.as_view()),
 	url(r'^trips/register/$', views.register,name='register'),
 	url(r'^trips/login/$', login,{'template_name':'cautionjson/login.html'},name='login')
 
